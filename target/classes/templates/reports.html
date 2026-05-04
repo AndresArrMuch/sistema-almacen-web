@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Reportes - Gestión de Almacén</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.4/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<div class="app-shell">
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+    <div class="content-area">
+        <div th:replace="fragments/header :: header"></div>
+        <section class="page-content">
+            <div class="panel-header">
+                <div>
+                    <h2>Reportes</h2>
+                    <p>Visualiza métricas clave, exporta datos y revisa el histórico de movimientos en el almacén.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a class="btn btn-outline-primary" th:href="@{/reports/export/products}"><i class="fa-solid fa-file-csv"></i> Exportar productos</a>
+                    <a class="btn btn-outline-secondary" th:href="@{/reports/export/movements(type='entries')}"><i class="fa-solid fa-file-csv"></i> Exportar entradas</a>
+                    <a class="btn btn-outline-secondary" th:href="@{/reports/export/movements(type='exits')}"><i class="fa-solid fa-file-csv"></i> Exportar salidas</a>
+                </div>
+            </div>
+
+            <div class="cards-grid">
+                <div class="metric-card card-blue">
+                    <div class="metric-title">Total productos</div>
+                    <div class="metric-value" th:text="${totalProducts}"></div>
+                </div>
+                <div class="metric-card card-green">
+                    <div class="metric-title">Entradas este mes</div>
+                    <div class="metric-value" th:text="${monthlyEntries}"></div>
+                </div>
+                <div class="metric-card card-orange">
+                    <div class="metric-title">Salidas este mes</div>
+                    <div class="metric-value" th:text="${monthlyExits}"></div>
+                </div>
+                <div class="metric-card card-purple">
+                    <div class="metric-title">Valor inventario</div>
+                    <div class="metric-value">$<span th:text="${inventoryValue}"></span></div>
+                </div>
+            </div>
+
+            <div class="card card-panel">
+                <div class="panel-header">
+                    <div>
+                        <h3>Movimientos y stock bajo</h3>
+                        <p>Filtra el historial de entradas y salidas por rango de fechas.</p>
+                    </div>
+                </div>
+                <form class="row g-3 mb-4" method="get" th:action="@{/reports}">
+                    <div class="col-md-4">
+                        <label class="form-label">Fecha inicio</label>
+                        <input type="date" class="form-control" name="startDate" th:value="${startDate}">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Fecha fin</label>
+                        <input type="date" class="form-control" name="endDate" th:value="${endDate}">
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button class="btn btn-primary w-100">Aplicar filtro</button>
+                    </div>
+                </form>
+
+                <div class="row gap-3">
+                    <div class="col-12 col-lg-6">
+                        <h5>Productos con stock bajo</h5>
+                        <table class="table table-striped table-sm">
+                            <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                                <th>Estado</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="product : ${lowStock}">
+                                <td th:text="${product.name}"></td>
+                                <td th:text="${product.quantity}"></td>
+                                <td><span class="status-tag" th:classappend="${product.status == 'Agotado'} ? ' status-red' : ' status-yellow'" th:text="${product.status}"></span></td>
+                            </tr>
+                            <tr th:if="${lowStock.isEmpty()}">
+                                <td colspan="3">No hay productos con stock bajo.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="col-12 col-lg-6">
+                        <h5>Entradas recientes</h5>
+                        <table class="table table-striped table-sm">
+                            <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="entry : ${recentEntries}">
+                                <td th:text="${entry.date}"></td>
+                                <td th:text="${entry.product.name}"></td>
+                                <td th:text="${entry.quantity}"></td>
+                            </tr>
+                            <tr th:if="${recentEntries.isEmpty()}">
+                                <td colspan="3">No hay entradas en el periodo seleccionado.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row gap-3 mt-3">
+                    <div class="col-12">
+                        <h5>Salidas recientes</h5>
+                        <table class="table table-striped table-sm">
+                            <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                                <th>Destino</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="exit : ${recentExits}">
+                                <td th:text="${exit.date}"></td>
+                                <td th:text="${exit.product.name}"></td>
+                                <td th:text="${exit.quantity}"></td>
+                                <td th:text="${exit.destination}"></td>
+                            </tr>
+                            <tr th:if="${recentExits.isEmpty()}">
+                                <td colspan="4">No hay salidas en el periodo seleccionado.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>

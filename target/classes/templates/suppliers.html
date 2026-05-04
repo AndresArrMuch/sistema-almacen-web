@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Proveedores - Gestión de Almacén</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.4/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<div class="app-shell">
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+    <div class="content-area">
+        <div th:replace="fragments/header :: header"></div>
+        <section class="page-content">
+            <div class="panel-header">
+                <h2>Proveedores</h2>
+            </div>
+            <div class="card card-panel mb-4">
+                <form class="row g-3" method="post" th:action="@{/suppliers/save}">
+                    <div class="col-md-4">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" name="name" class="form-control" placeholder="Nombre proveedor" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Contacto</label>
+                        <input type="text" name="contact" class="form-control" placeholder="Teléfono" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control" placeholder="correo@proveedor.com" required>
+                    </div>
+                    <div class="col-12 text-end">
+                        <button class="btn btn-primary">Guardar proveedor</button>
+                    </div>
+                </form>
+            </div>
+            <div class="table-panel">
+                <table class="table table-hover align-middle">
+                    <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Contacto</th>
+                        <th>Email</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="supplier : ${suppliers}">
+                        <td th:text="${supplier.name}">Proveedor</td>
+                        <td th:text="${supplier.contact}">Contacto</td>
+                        <td th:text="${supplier.email}">Email</td>
+                        <td>
+                            <a class="btn btn-sm btn-danger" th:href="@{/suppliers/delete/{id}(id=${supplier.id})}" onclick="return confirm('Eliminar proveedor?')">Eliminar</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>

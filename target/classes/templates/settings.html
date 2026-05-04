@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Configuración - Gestión de Almacén</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.4/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<div class="app-shell">
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+    <div class="content-area">
+        <div th:replace="fragments/header :: header"></div>
+        <section class="page-content">
+            <div class="panel-header">
+                <h2>Configuración</h2>
+                <p>Actualiza los ajustes generales del sistema y administra la experiencia del usuario.</p>
+            </div>
+            <div class="card card-panel">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Información del sistema</h5>
+                        <p><strong>Nombre:</strong> <span th:text="${appName}"></span></p>
+                        <p><strong>Base de datos:</strong> MySQL</p>
+                        <p><strong>Rol activo:</strong> Administrador</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Preferencias</h5>
+                        <p>En esta sección se pueden agregar ajustes de comportamiento, notificaciones y alertas de stock bajo.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>

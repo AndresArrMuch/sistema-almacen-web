@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Dashboard - Gestión de Almacén</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.4/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="app-shell">
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+    <div class="content-area">
+        <div th:replace="fragments/header :: header"></div>
+        <section class="page-content">
+            <div class="cards-grid">
+                <div class="metric-card card-blue">
+                    <div class="metric-title">Total Productos</div>
+                    <div class="metric-value" th:text="${totalProducts}">0</div>
+                </div>
+                <div class="metric-card card-green">
+                    <div class="metric-title">Entradas este mes</div>
+                    <div class="metric-value" th:text="${monthlyEntries}">0</div>
+                </div>
+                <div class="metric-card card-orange">
+                    <div class="metric-title">Salidas este mes</div>
+                    <div class="metric-value" th:text="${monthlyExits}">0</div>
+                </div>
+                <div class="metric-card card-purple">
+                    <div class="metric-title">Valor de inventario</div>
+                    <div class="metric-value">$<span th:text="${inventoryValue}">0.00</span></div>
+                </div>
+            </div>
+            <div class="dashboard-panel">
+                <div class="panel-header">
+                    <h2>Actividad reciente</h2>
+                </div>
+                <div class="panel-body">
+                    <p>Este panel muestra los indicadores clave del almacén y ayuda a identificar rápidamente el estado de stock, entradas y salidas.</p>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card card-panel">
+                        <h5 class="card-title">Productos por Categoría</h5>
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card card-panel">
+                        <h5 class="card-title">Entradas vs Salidas Mensuales</h5>
+                        <canvas id="movementChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<script>
+    // Gráfico de productos por categoría
+    const categoryData = /*[[${productsByCategory}]]*/ {};
+    const categoryLabels = Object.keys(categoryData);
+    const categoryValues = Object.values(categoryData);
+    
+    const ctx1 = document.getElementById('categoryChart').getContext('2d');
+    new Chart(ctx1, {
+        type: 'pie',
+        data: {
+            labels: categoryLabels,
+            datasets: [{
+                data: categoryValues,
+                backgroundColor: ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1']
+            }]
+        }
+    });
+
+    // Gráfico de entradas vs salidas
+    const entries = /*[[${monthlyEntries}]]*/ 0;
+    const exits = /*[[${monthlyExits}]]*/ 0;
+    
+    const ctx2 = document.getElementById('movementChart').getContext('2d');
+    new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: ['Este Mes'],
+            datasets: [{
+                label: 'Entradas',
+                data: [entries],
+                backgroundColor: '#28a745'
+            }, {
+                label: 'Salidas',
+                data: [exits],
+                backgroundColor: '#dc3545'
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>

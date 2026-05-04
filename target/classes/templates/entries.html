@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Entradas - Gestión de Almacén</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.4/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<div class="app-shell">
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+    <div class="content-area">
+        <div th:replace="fragments/header :: header"></div>
+        <section class="page-content">
+            <div class="panel-header">
+                <h2>Entradas</h2>
+            </div>
+            <div class="card card-panel">
+                <form class="row g-3" method="post" th:action="@{/entries/save}">
+                    <div class="col-md-4">
+                        <label class="form-label">Producto</label>
+                        <select class="form-select" name="productId" required>
+                            <option value="">Seleccione producto</option>
+                            <option th:each="product : ${products}" th:value="${product.id}" th:text="${product.name}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Proveedor</label>
+                        <select class="form-select" name="supplierId" required>
+                            <option value="">Seleccione proveedor</option>
+                            <option th:each="supplier : ${suppliers}" th:value="${supplier.id}" th:text="${supplier.name}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Cantidad</label>
+                        <input type="number" class="form-control" name="quantity" min="1" value="1" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Nota</label>
+                        <input type="text" class="form-control" name="note" placeholder="Detalle de la entrada">
+                    </div>
+                    <div class="col-12 text-end">
+                        <button class="btn btn-success">Registrar entrada</button>
+                    </div>
+                </form>
+            </div>
+            <div class="table-panel">
+                <table class="table table-hover align-middle">
+                    <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Producto</th>
+                        <th>Proveedor</th>
+                        <th>Cantidad</th>
+                        <th>Nota</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="entry : ${entries}">
+                        <td th:text="${entry.date}"></td>
+                        <td th:text="${entry.product.name}"></td>
+                        <td th:text="${entry.supplier.name}"></td>
+                        <td th:text="${entry.quantity}"></td>
+                        <td th:text="${entry.note}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>
